@@ -12,7 +12,11 @@ export class DetalleVentaService {
   private readonly detalleRepository: Repository<DetalleVenta>
   ){}  
   async create(createDetalleVentaDto: CreateDetalleVentaDto) {
-    const detalle = this.detalleRepository.create(createDetalleVentaDto)
+    const total = createDetalleVentaDto.cantidad * createDetalleVentaDto.precio_unitario
+    const detalle = this.detalleRepository.create({
+      ...createDetalleVentaDto,
+      total
+    })
     return await this.detalleRepository.save(detalle);
   }
 
