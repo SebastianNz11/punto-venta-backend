@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { ProductoModule } from './producto/producto.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { VentaModule } from './venta/venta.module';
+import { DetalleVentaModule } from './detalle-venta/detalle-venta.module';
 
 @Module({
   imports: [ClienteModule,ConfigModule.forRoot(), TypeOrmModule.forRoot({
@@ -18,7 +20,7 @@ import { UsuarioModule } from './usuario/usuario.module';
       ssl: {
         rejectUnauthorized: false
       }
-  }), ProductoModule, UsuarioModule],
+  }), ProductoModule, UsuarioModule, VentaModule, DetalleVentaModule],
   controllers: [],
   providers: [],
 })
