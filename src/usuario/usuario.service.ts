@@ -4,6 +4,7 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
 import { Repository } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsuarioService {
@@ -17,7 +18,11 @@ export class UsuarioService {
     if (email) {
       throw new ConflictException('El email ya existe');
     }
-    const usuario = this.usuarioRepository.create(createUsuarioDto);
+    const hashedPassword = await bcrypt.hash(createUsuarioDto.password, 10);
+    const usuario = this.usuarioRepository.create({
+      ...createUsuarioDto,
+      password: hashedPassword,
+    });
     return await this.usuarioRepository.save(usuario);
   }
 
@@ -35,6 +40,9 @@ export class UsuarioService {
   }
 
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
+    if (updateUsuarioDto.password) {
+      updateUsuarioDto.password = await bcrypt.hash(updateUsuarioDto.password, 10);
+    }
     const usuario = await this.usuarioRepository.preload({
       id,
       ...updateUsuarioDto
@@ -51,5 +59,9 @@ export class UsuarioService {
       throw new NotFoundException('El usuario no existe');
     }
     return {message: "Usuario eliminado con exito"}
+  }
+
+  async findByEmail(email: string): Promise<Usuario | null> {
+    return this.usuarioRepository.findOne({ where: { email } });
   }
 }

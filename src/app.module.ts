@@ -6,10 +6,13 @@ import { ProductoModule } from './producto/producto.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { VentaModule } from './venta/venta.module';
 import { DetalleVentaModule } from './detalle-venta/detalle-venta.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
-  imports: [ClienteModule,ConfigModule.forRoot(), TypeOrmModule.forRoot({
-    type: 'postgres',
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
       host: process.env.PGHOST,
       port: parseInt(process.env.PGPORT!),
       username: process.env.PGUSER,
@@ -20,8 +23,16 @@ import { DetalleVentaModule } from './detalle-venta/detalle-venta.module';
       ssl: {
         rejectUnauthorized: false
       }
-  }), ProductoModule, UsuarioModule, VentaModule, DetalleVentaModule],
+    }),
+    ClienteModule,
+    ProductoModule,
+    UsuarioModule,
+    VentaModule,
+    DetalleVentaModule,
+    AuthModule,
+  ],
   controllers: [],
   providers: [],
 })
 export class AppModule {}
+

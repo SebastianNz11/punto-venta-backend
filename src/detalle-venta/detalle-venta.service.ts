@@ -21,28 +21,32 @@ export class DetalleVentaService {
   }
 
   async findAll() {
-    const detalle = this.detalleRepository.find()
+    const detalle = await this.detalleRepository.find();
     return detalle;
   }
 
   async findOne(id: string) {
-    const detalle = await this.detalleRepository.findOneBy({id})
+    const detalle = await this.detalleRepository.findOneBy({id});
     if (!detalle) {
       throw new NotFoundException('No se encontró el detalle');
     }
     return detalle;
   }
 
-  async update(id: string, updateDetalleVentaDto: UpdateDetalleVentaDto) {
-    const detalle = await this.detalleRepository.preload({
-      id,
-      ...updateDetalleVentaDto
-    })
-    if (!detalle) {
-      throw new NotFoundException('No se encontró el detalle');
-    }
-    return await this.detalleRepository.save(detalle);
+async update(id: string, updateDetalleVentaDto: UpdateDetalleVentaDto) {
+
+  const detalle = await this.detalleRepository.preload({
+    id,
+    ...updateDetalleVentaDto,
+    total: updateDetalleVentaDto.cantidad! * updateDetalleVentaDto.precio_unitario!
+  });
+
+  if (!detalle) {
+    throw new NotFoundException('No se encontró el detalle');
   }
+
+  return await this.detalleRepository.save(detalle);
+}
 
   async remove(id: string) {
     const detalle = await this.detalleRepository.delete(id)

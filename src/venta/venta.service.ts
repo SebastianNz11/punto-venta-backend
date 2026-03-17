@@ -17,12 +17,12 @@ export class VentaService {
   }
 
   async findAll() {
-    const ventas = await this.ventasRepository.find()
-    return ventas
+    const ventas = await this.ventasRepository.find();
+    return ventas;
   }
 
   async findOne(id: string) {
-    const venta = this.ventasRepository.findOneBy({id});
+    const venta = await this.ventasRepository.findOneBy({id});
     if (!venta) {
       throw new NotFoundException('No se encontró la venta');
     }
